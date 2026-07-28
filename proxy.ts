@@ -2,8 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 
 const protectedRoutes = [
-  "/command-center",
-  "/workforce",
+  "/workers",
   "/leads",
   "/conversations",
   "/opportunities",
@@ -12,7 +11,7 @@ const protectedRoutes = [
   "/settings",
 ]
 
-const publicRoutes = ["/login", "/signup", "/"]
+const publicRoutes = ["/login", "/signup"]
 
 export default async function proxy(req: NextRequest) {
   let supabaseResponse = NextResponse.next({ request: req })
@@ -46,12 +45,16 @@ export default async function proxy(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route))
   const isPublicRoute = publicRoutes.includes(path)
 
+  if (path === "/" && !user) {
+    return supabaseResponse
+  }
+
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL("/login", req.nextUrl))
   }
 
-  if (isPublicRoute && user && !path.startsWith("/command-center")) {
-    return NextResponse.redirect(new URL("/command-center", req.nextUrl))
+  if (isPublicRoute && user) {
+    return NextResponse.redirect(new URL("/", req.nextUrl))
   }
 
   return supabaseResponse
