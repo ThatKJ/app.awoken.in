@@ -17,7 +17,7 @@ export function CTASection() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           {industries.map((industry) => (
             <Link key={industry.slug} href={`/${industry.slug}`}>
-              <Button variant="outline" size="md" className="group">
+              <Button variant="secondary" size="default" className="group">
                 {industry.name}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </Button>

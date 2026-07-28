@@ -1,0 +1,17 @@
+export const AnalyticsEvents = {
+  WORKER_MODE_CHANGED: "worker_mode_changed",
+  WORKER_APPROVED: "worker_approved",
+  WORKER_REJECTED: "worker_rejected",
+  LEAD_CREATED: "lead_created",
+  LEAD_STATUS_CHANGED: "lead_status_changed",
+  TASK_COMPLETED: "task_completed",
+  TASK_APPROVED: "task_approved",
+  TASK_REJECTED: "task_rejected",
+  APPOINTMENT_BOOKED: "appointment_booked",
+  CONVERSATION_STARTED: "conversation_started",
+  INTEGRATION_CONNECTED: "integration_connected",
+  INTEGRATION_DISCONNECTED: "integration_disconnected",
+  USER_SIGNED_IN: "user_signed_in",
+  USER_SIGNED_UP: "user_signed_up",
+  USER_SIGNED_OUT: "user_signed_out",
+} as const

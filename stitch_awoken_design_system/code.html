@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<style>
+@layer base {
+  html, body { margin: 0; padding: 0; }
+  body { overscroll-behavior: none; }
+  main > :first-child { margin-top: 0 !important; }
+  main > :last-child { margin-bottom: 0 !important; }
+}
+::-webkit-scrollbar { display: none; }
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-ticker {
+  animation: ticker 40s linear infinite;
+}
+@keyframes progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+.animate-progress {
+  animation: progress 2s ease-in-out infinite alternate;
+}
+@keyframes typing {
+  0% { opacity: .2; }
+  20% { opacity: 1; }
+  100% { opacity: .2; }
+}
+.typing-dot {
+  animation: typing 1.4s infinite both;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.card-glow-orange:hover { border-color: rgba(249, 115, 22, 0.5); box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.15), 0 8px 10px -6px rgba(249, 115, 22, 0.1); }
+.card-glow-green:hover { border-color: rgba(34, 197, 94, 0.5); box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.15), 0 8px 10px -6px rgba(34, 197, 94, 0.1); }
+.card-glow-purple:hover { border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.15), 0 8px 10px -6px rgba(168, 85, 247, 0.1); }
+.card-glow-yellow:hover { border-color: rgba(234, 179, 8, 0.5); box-shadow: 0 10px 25px -5px rgba(234, 179, 8, 0.15), 0 8px 10px -6px rgba(234, 179, 8, 0.1); }
+</style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-primary": "#ffffff",
+                "primary-fixed": "#ffdbca",
+                "on-error": "#ffffff",
+                "primary-container": "#f97316",
+                "surface": "#fbf9f8",
+                "primary": "#9d4300",
+                "on-tertiary-fixed-variant": "#004b74",
+                "surface-container-low": "#f5f3f3",
+                "primary-fixed-dim": "#ffb690",
+                "secondary-container": "#e2dfde",
+                "on-surface": "#1b1c1c",
+                "inverse-on-surface": "#f2f0f0",
+                "on-error-container": "#93000a",
+                "on-tertiary": "#ffffff",
+                "on-secondary-container": "#636262",
+                "on-secondary": "#ffffff",
+                "tertiary-fixed-dim": "#93ccff",
+                "secondary-fixed-dim": "#c8c6c5",
+                "surface-container-highest": "#e4e2e2",
+                "background": "#F4F2EC", /* Updated bg */
+                "inverse-primary": "#ffb690",
+                "on-tertiary-fixed": "#001d32",
+                "inverse-surface": "#303030",
+                "error": "#ba1a1a",
+                "surface-bright": "#fbf9f8",
+                "surface-container": "#efeded",
+                "surface-dim": "#dbd9d9",
+                "on-secondary-fixed-variant": "#474746",
+                "on-primary-fixed": "#341100",
+                "outline": "#E5E1D8", /* Subtle border */
+                "tertiary-fixed": "#cde5ff",
+                "surface-variant": "#e4e2e2",
+                "on-background": "#1b1c1c",
+                "secondary": "#5f5e5e",
+                "tertiary-container": "#00a2f4",
+                "surface-tint": "#9d4300",
+                "on-primary-container": "#582200",
+                "on-secondary-fixed": "#1c1b1b",
+                "on-primary-fixed-variant": "#783200",
+                "secondary-fixed": "#e5e2e1",
+                "error-container": "#ffdad6",
+                "surface-container-high": "#eae8e7",
+                "surface-container-lowest": "#ffffff",
+                "tertiary": "#006398",
+                "on-tertiary-container": "#003554",
+                "on-surface-variant": "#584237",
+                "outline-variant": "#e0c0b1",
+                "sidebar-bg": "#F8F6F1",
+                "card-bg": "#FFFFFF",
+                "app-bg": "#F4F2EC"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "sm": "12px",
+                "lg": "40px",
+                "xl": "64px",
+                "gutter": "24px",
+                "margin-mobile": "16px",
+                "base": "8px",
+                "md": "24px",
+                "container-max": "1280px",
+                "xs": "4px",
+                "section": "40px"
+        },
+        "fontFamily": {
+                "display-lg": [
+                        "Manrope"
+                ],
+                "label-md": [
+                        "JetBrains Mono"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Manrope"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Manrope"
+                ],
+                "headline-lg": [
+                        "Manrope"
+                ]
+        },
+        "fontSize": {
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "label-md": [
+                        "13px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.02em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+</head>
+<body class="bg-app-bg font-body-md text-on-surface">
+<aside class="fixed left-0 top-0 h-full w-72 bg-sidebar-bg border-r border-outline z-50 flex flex-col transition-all duration-300 lg:translate-x-0 -translate-x-full" id="sidebar">
+<div class="pt-6 px-6 mb-6 flex flex-col gap-2 border-b border-outline pb-4">
+<div class="flex items-center gap-2">
+<img alt="Awoken Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdfoTbGkI0-w5jqfGXZeU6eHsKyRc1AWJlBzacGzt9HrLUdcJNVFXNqgoAQYDuJ14zFM_E0PYl6bkYzjTlvxb6nBpU4jQSMr1jR0Mez6fsOof1mBE3hNt23h6JsLJuJPtv9Sl2j8Juf-ZuVLuDj_-fdzsdqzh0GXnbjytyM5sPVy60zyfwg1R4A2wLH_3WWuh4VK4pyLlngPVPQyahDO8TyUTs3JkwxyFE0HkAZyryrBqmFEr9f6LI89KZ4E9ymYkaIQ"/>
+<span class="font-display-lg text-lg font-bold text-on-surface">awoken</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="text-[10px] text-on-surface-variant font-medium tracking-wider uppercase">AI Workforce OS</span>
+<span class="bg-green-100 text-green-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> 5 Active
+        </span>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1 overflow-y-auto" data-active-classes="bg-primary-container/10 text-primary-container font-medium">
+<a aria-current="page" class="flex items-center px-4 py-2.5 rounded-lg transition-colors group bg-primary-container/10 text-primary-container font-medium" data-path="command-center" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px] group-hover:text-primary-container">dashboard</span>
+<span class="text-label-md">Command Center</span>
+</a>
+<a class="flex flex-col px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors group" data-path="workforce" href="#">
+<div class="flex items-center">
+<span class="material-symbols-outlined mr-3 text-[20px] group-hover:text-primary">smart_toy</span>
+<span class="text-label-md">Workforce</span>
+</div>
+<span class="text-[10px] text-green-600 ml-8 mt-0.5">5/5 Workers Active</span>
+</a>
+<a class="flex items-center px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors group" data-path="leads" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px] group-hover:text-primary">target</span>
+<span class="text-label-md">Leads</span>
+</a>
+<a class="flex items-center px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors group" data-path="conversations" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px] group-hover:text-primary">chat_bubble</span>
+<span class="text-label-md">Conversations</span>
+</a>
+<a class="flex items-center px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors group" data-path="opportunities" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px] group-hover:text-primary">monetization_on</span>
+<span class="text-label-md">Opportunities</span>
+</a>
+<a class="flex items-center px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors group" data-path="knowledge" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px] group-hover:text-primary">auto_stories</span>
+<span class="text-label-md">Knowledge</span>
+</a>
+<a class="flex items-center px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors group" data-path="reports" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px] group-hover:text-primary">bar_chart</span>
+<span class="text-label-md">Reports</span>
+</a>
+</nav>
+<div class="px-4 py-6 border-t border-outline space-y-1">
+<button class="flex items-center w-full px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined mr-3 text-[20px]">settings</span>
+<span class="text-label-md">Settings</span>
+</button>
+<button class="flex items-center justify-between w-full px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<div class="flex items-center">
+<span class="material-symbols-outlined mr-3 text-[20px]">corporate_fare</span>
+<span class="text-label-md">Organization</span>
+</div>
+<span class="material-symbols-outlined text-[16px]">unfold_more</span>
+</button>
+<div class="flex items-center px-4 py-4 mt-2 gap-3 border-t border-outline pt-6">
+<img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLssNX3kSojNJ2KnyPF-jh6MMxjY7PA0nHu7qo7zBR8RlvWVXf3ZZr6eHKYk-2Oar16issPnoloX8iwPiIfkWJZCcz9z6IUuPqr-DrKHO_F-AgnITI2ipuxn9NjjKXOKI3tzTLHmFE9SV-9rBw_PKeeAjWHPvGha9YILnYvzuV-sCoagk0KMH0_RuNsDTC5x_seMili_AlDkA84n7DmNdC5yCSGzpJC1rZrOLtrjkMaE92iJMYCYlkxwmK2F9HloyfT9TxQvI7qYUg"/>
+<div class="flex-1 min-w-0">
+<p class="text-label-md text-on-surface truncate">Alex Sterling</p>
+<p class="text-label-sm text-on-surface-variant truncate">Executive</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">more_vert</span>
+</div>
+</div>
+</aside>
+<div class="lg:pl-72 flex flex-col min-h-screen relative pb-10">
+<header class="sticky top-0 h-16 bg-app-bg/80 backdrop-blur-md z-40 px-6 flex items-center justify-between border-b border-transparent">
+<div class="flex items-center gap-4">
+<button class="lg:hidden material-symbols-outlined text-on-surface-variant">menu</button>
+<nav class="hidden sm:flex items-center gap-2 text-label-sm text-on-surface-variant">
+<span class="hover:text-on-surface cursor-pointer">Platform</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface font-medium">Command Center</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex flex-col group relative">
+<div class="flex items-center bg-card-bg border border-outline rounded-lg px-4 py-2 w-[400px] gap-2 cursor-text focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container transition-all shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface flex-1 placeholder:text-on-surface-variant/70 p-0" placeholder="Ask your workforce..." type="text"/>
+<span class="text-[10px] bg-surface-container-high px-1.5 py-0.5 rounded border border-outline font-medium text-on-surface-variant">⌘K</span>
+</div>
+<div class="absolute top-full mt-2 w-full bg-card-bg border border-outline rounded-lg shadow-xl opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50 p-2">
+<div class="text-xs font-medium text-on-surface-variant px-2 py-1 mb-1 uppercase tracking-wider">Example Queries</div>
+<button class="w-full text-left px-3 py-2 text-sm text-on-surface hover:bg-surface-container-low rounded-md transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-purple-500">search</span> Why is Recovery slower today?
+              </button>
+<button class="w-full text-left px-3 py-2 text-sm text-on-surface hover:bg-surface-container-low rounded-md transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-green-500">search</span> Show today's qualified leads
+              </button>
+<button class="w-full text-left px-3 py-2 text-sm text-on-surface hover:bg-surface-container-low rounded-md transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-blue-500">search</span> What happened overnight?
+              </button>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-low text-on-surface-variant relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-primary-container rounded-full"></span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 p-gutter bg-app-bg">
+<div class="flex flex-col w-full font-body-md text-on-surface">
+<div class="max-w-container-max mx-auto w-full px-gutter md:px-margin-desktop py-8 flex flex-col gap-10">
+<section class="flex flex-col items-center text-center gap-4 relative z-10 py-10">
+<p class="font-headline-md text-on-surface-variant">Today's Pipeline</p>
+<h1 class="font-display-lg text-[72px] md:text-[96px] text-on-surface font-extrabold leading-none tracking-tight">₹3.2M</h1>
+<div class="flex items-center gap-2 text-green-600 font-medium text-lg mt-2">
+<span class="material-symbols-outlined">trending_up</span>
+<span>+₹750K vs Yesterday</span>
+</div>
+<div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 px-6 py-4 bg-card-bg/60 backdrop-blur-sm rounded-full border border-outline/50 shadow-sm text-sm text-on-surface-variant mt-8">
+<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span> <span class="font-medium text-on-surface">5 Workers Active</span></div>
+<div class="w-px h-4 bg-outline hidden sm:block"></div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">task_alt</span> 41 Tasks Today</div>
+<div class="w-px h-4 bg-outline hidden sm:block"></div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">forum</span> 12 Conversations</div>
+<div class="w-px h-4 bg-outline hidden sm:block"></div>
+<div class="flex items-center gap-2 text-orange-600 font-medium"><span class="material-symbols-outlined text-[18px]">priority_high</span> 1 Issue Requires Approval</div>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="bg-card-bg rounded-xl p-6 shadow-sm border border-outline/50 flex flex-col gap-2 card-hover">
+<span class="text-sm font-medium text-on-surface-variant flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-purple-500">cached</span> Recovery</span>
+<span class="text-3xl font-bold text-on-surface">$780K</span>
+<span class="text-xs text-green-600 font-medium">+12% vs avg</span>
+</div>
+<div class="bg-card-bg rounded-xl p-6 shadow-sm border border-outline/50 flex flex-col gap-2 card-hover">
+<span class="text-sm font-medium text-on-surface-variant flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-green-500">verified</span> Qualification</span>
+<span class="text-3xl font-bold text-on-surface">97%</span>
+<span class="text-xs text-on-surface-variant">Accuracy rate</span>
+</div>
+<div class="bg-card-bg rounded-xl p-6 shadow-sm border border-outline/50 flex flex-col gap-2 card-hover">
+<span class="text-sm font-medium text-on-surface-variant flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-blue-500">speed</span> Avg Speed</span>
+<span class="text-3xl font-bold text-on-surface">11s</span>
+<span class="text-xs text-green-600 font-medium">-2s faster</span>
+</div>
+<div class="bg-primary-container text-white rounded-xl p-6 shadow-md flex flex-col justify-center items-start gap-3 card-hover relative overflow-hidden group cursor-pointer border border-orange-600">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-white/20 rounded-full blur-2xl transition-transform group-hover:scale-150 duration-700 ease-out"></div>
+<span class="text-xs font-bold uppercase tracking-wider text-white/80 relative z-10">AI Recommendation</span>
+<span class="text-lg font-bold leading-tight relative z-10">Increase Meta Budget</span>
+<button class="mt-auto bg-white text-primary-container text-sm font-bold px-4 py-2 rounded-md shadow-sm relative z-10 hover:bg-orange-50 transition-colors w-full flex justify-between items-center">
+            Apply Now <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</section>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+<section class="xl:col-span-2 flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-xl text-on-surface font-semibold">Active Workforce</h3>
+<button class="text-primary-container hover:text-orange-700 font-label-md text-label-md flex items-center gap-1 transition-colors">
+              Manage Fleet <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="bg-card-bg rounded-xl p-5 shadow-sm flex flex-col gap-4 border border-outline/50 border-t-4 border-t-orange-500 cursor-pointer card-hover card-glow-orange relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-orange-500/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 shadow-inner">
+<span class="material-symbols-outlined text-[24px]">bolt</span>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Response Worker</h4>
+<p class="text-xs text-on-surface-variant font-medium">Agent Alpha</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Queue: 3</span>
+</div>
+</div>
+<div class="mt-auto pt-4 relative z-10">
+<div class="flex items-center gap-2 mb-3">
+<span class="text-sm font-medium text-on-surface-variant">Status:</span>
+<span class="text-sm text-orange-600 font-medium italic flex items-center">
+                  Building response
+                  <span class="flex gap-0.5 ml-1">
+<span class="w-1 h-1 bg-orange-600 rounded-full typing-dot"></span>
+<span class="w-1 h-1 bg-orange-600 rounded-full typing-dot"></span>
+<span class="w-1 h-1 bg-orange-600 rounded-full typing-dot"></span>
+</span>
+</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mb-3 overflow-hidden shadow-inner">
+<div class="bg-orange-500 h-1.5 rounded-full w-3/4 animate-pulse"></div>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant font-medium">Last action: 8s ago</span>
+<span class="text-green-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span> WORKING</span>
+</div>
+</div>
+</div>
+<div class="bg-card-bg rounded-xl p-5 shadow-sm flex flex-col gap-4 border border-outline/50 border-t-4 border-t-green-500 cursor-pointer card-hover card-glow-green relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-green-500/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600 shadow-inner">
+<span class="material-symbols-outlined text-[24px]">filter_alt</span>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Qualification</h4>
+<p class="text-xs text-on-surface-variant font-medium">Agent Beta</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Queue: 1</span>
+</div>
+</div>
+<div class="mt-auto pt-4 relative z-10">
+<div class="flex items-center gap-2 mb-3">
+<span class="text-sm font-medium text-on-surface-variant">Status:</span>
+<span class="text-sm text-green-600 font-medium italic flex items-center">
+                  Thinking
+                  <span class="flex gap-0.5 ml-1">
+<span class="w-1 h-1 bg-green-600 rounded-full typing-dot"></span>
+<span class="w-1 h-1 bg-green-600 rounded-full typing-dot"></span>
+<span class="w-1 h-1 bg-green-600 rounded-full typing-dot"></span>
+</span>
+</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mb-3 overflow-hidden shadow-inner">
+<div class="bg-green-400 h-1.5 rounded-full animate-progress"></div>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant font-medium">Last action: 2m ago</span>
+<span class="text-green-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span> WORKING</span>
+</div>
+</div>
+</div>
+<div class="bg-card-bg rounded-xl p-5 shadow-sm flex flex-col gap-4 border border-outline/50 border-t-4 border-t-purple-500 cursor-pointer card-hover card-glow-purple relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 shadow-inner">
+<span class="material-symbols-outlined text-[24px]">cached</span>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Recovery</h4>
+<p class="text-xs text-on-surface-variant font-medium">Agent Delta</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Queue: 12</span>
+</div>
+</div>
+<div class="mt-auto pt-4 relative z-10">
+<div class="flex items-center gap-2 mb-3">
+<span class="text-sm font-medium text-on-surface-variant">Status:</span>
+<span class="text-sm text-purple-600 font-medium italic flex items-center">
+                  Reading history
+                  <span class="flex gap-0.5 ml-1">
+<span class="w-1 h-1 bg-purple-600 rounded-full typing-dot"></span>
+<span class="w-1 h-1 bg-purple-600 rounded-full typing-dot"></span>
+<span class="w-1 h-1 bg-purple-600 rounded-full typing-dot"></span>
+</span>
+</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mb-3 overflow-hidden shadow-inner">
+<div class="bg-purple-500 h-1.5 rounded-full w-1/4 animate-pulse"></div>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant font-medium">Last action: 41m ago</span>
+<span class="text-green-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span> WORKING</span>
+</div>
+</div>
+</div>
+<div class="bg-card-bg rounded-xl p-5 shadow-sm flex flex-col gap-4 border border-outline/50 border-t-4 border-t-yellow-500 cursor-pointer card-hover card-glow-yellow relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-yellow-500/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-600 shadow-inner">
+<span class="material-symbols-outlined text-[24px]">event_available</span>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Appointment</h4>
+<p class="text-xs text-on-surface-variant font-medium">Agent Gamma</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-surface-container-low text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded-full">Queue: 0</span>
+</div>
+</div>
+<div class="mt-auto pt-4 relative z-10">
+<div class="flex items-center gap-2 mb-3">
+<span class="text-sm font-medium text-on-surface-variant">Status:</span>
+<span class="text-sm text-on-surface font-medium truncate">Syncing calendar...</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mb-3 overflow-hidden shadow-inner">
+<div class="bg-yellow-500 h-1.5 rounded-full w-full"></div>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant font-medium">Last action: 14s ago</span>
+<span class="text-green-600 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span> WORKING</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="xl:col-span-1 flex flex-col gap-6">
+<h3 class="font-headline-md text-xl text-on-surface font-semibold">Live Activity feed</h3>
+<div class="bg-card-bg border border-outline/50 rounded-xl shadow-sm h-[600px] flex flex-col relative overflow-hidden">
+<div class="absolute left-7 top-6 bottom-6 w-px bg-outline/50 z-0"></div>
+<div class="flex-1 overflow-y-auto relative z-10 p-6 space-y-6">
+<div class="flex gap-4 items-start group">
+<div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 flex-shrink-0 z-10 shadow-sm border border-purple-200 mt-1">
+<span class="material-symbols-outlined text-[14px]">cached</span>
+</div>
+<div class="flex-1 bg-surface-container-low/50 rounded-lg p-3 border border-outline/30 hover:border-purple-200 hover:bg-purple-50/30 transition-colors">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-sm font-bold text-on-surface">Recovery Worker</p>
+<span class="text-xs font-medium text-on-surface-variant">Just now</span>
+</div>
+<p class="text-sm text-on-surface">Recovered <span class="font-semibold">Anjali Nair</span> | $780K Opportunity</p>
+</div>
+</div>
+<div class="flex gap-4 items-start group">
+<div class="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 flex-shrink-0 z-10 shadow-sm border border-yellow-200 mt-1">
+<span class="material-symbols-outlined text-[14px]">event_available</span>
+</div>
+<div class="flex-1 bg-surface-container-low/50 rounded-lg p-3 border border-outline/30 hover:border-yellow-200 hover:bg-yellow-50/30 transition-colors">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-sm font-bold text-on-surface">Appointment Worker</p>
+<span class="text-xs font-medium text-on-surface-variant">17 min ago</span>
+</div>
+<p class="text-sm text-on-surface">Booked meeting with <span class="font-semibold">Sarah Jenkins</span></p>
+</div>
+</div>
+<div class="flex gap-4 items-start group">
+<div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 flex-shrink-0 z-10 shadow-sm border border-green-200 mt-1">
+<span class="material-symbols-outlined text-[14px]">filter_alt</span>
+</div>
+<div class="flex-1 bg-surface-container-low/50 rounded-lg p-3 border border-outline/30 hover:border-green-200 hover:bg-green-50/30 transition-colors">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-sm font-bold text-on-surface">Qualification Worker</p>
+<span class="text-xs font-medium text-on-surface-variant">39 min ago</span>
+</div>
+<p class="text-sm text-on-surface">Qualified <span class="font-semibold">TechCorp Enterprise</span> | Score: <span class="text-green-600 font-bold">92/100</span></p>
+</div>
+</div>
+<div class="flex gap-4 items-start group">
+<div class="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0 z-10 shadow-sm border border-orange-200 mt-1">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+</div>
+<div class="flex-1 bg-orange-50 rounded-lg p-3 border border-orange-200 hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"></div>
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-sm font-bold text-orange-700">Review Required</p>
+<span class="text-xs font-medium text-orange-600/70">1h 16m ago</span>
+</div>
+<p class="text-sm text-on-surface font-medium mb-2">Discount authorization requested by Rahul</p>
+<button class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-3 py-1.5 rounded transition-colors w-full">Review Escalation</button>
+</div>
+</div>
+<div class="flex gap-4 items-start group">
+<div class="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0 z-10 shadow-sm border border-orange-200 mt-1">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+</div>
+<div class="flex-1 bg-surface-container-low/50 rounded-lg p-3 border border-outline/30 hover:border-orange-200 hover:bg-orange-50/30 transition-colors">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-sm font-bold text-on-surface">Response Worker</p>
+<span class="text-xs font-medium text-on-surface-variant">1h 46m ago</span>
+</div>
+<p class="text-sm text-on-surface">Initial outreach complete (14 leads)</p>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-outline/50 bg-surface-container-low/30 backdrop-blur-sm z-20 relative">
+<button class="w-full text-center font-semibold text-sm text-on-surface-variant hover:text-on-surface transition-colors flex justify-center items-center gap-1">View full log <span class="material-symbols-outlined text-[16px]">expand_more</span></button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-0 lg:left-72 right-0 h-8 bg-card-bg border-t border-outline/50 z-40 overflow-hidden flex items-center shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+<div class="whitespace-nowrap animate-ticker flex items-center gap-12 text-xs font-medium font-mono text-on-surface-variant" style="animation-duration: 60s;">
+<span><span class="text-orange-500 mr-1 animate-pulse">●</span> Response Worker replied to Rahul Patel... 2s ago</span>
+<span><span class="text-green-500 mr-1 animate-pulse">●</span> Qualification Worker analyzing TechCorp data... 14s ago</span>
+<span><span class="text-yellow-500 mr-1 animate-pulse">●</span> Appointment Worker verified Sarah's timezone... 45s ago</span>
+<span><span class="text-purple-500 mr-1 animate-pulse">●</span> Recovery Worker sent follow-up sequence... 1m ago</span>
+<span><span class="text-orange-500 mr-1 animate-pulse">●</span> Response Worker replied to Rahul Patel... 2s ago</span>
+<span><span class="text-green-500 mr-1 animate-pulse">●</span> Qualification Worker analyzing TechCorp data... 14s ago</span>
+</div>
+</div>
+</div>
+</body></html>

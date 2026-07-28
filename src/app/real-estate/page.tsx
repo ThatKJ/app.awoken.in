@@ -54,7 +54,7 @@ export default function RealEstatePage() {
                 </Button>
               </Link>
               <Link href="https://www.awoken.in/book" target="_blank">
-                <Button variant="outline" size="lg">
+                <Button variant="secondary" size="lg">
                   Book a Business Intelligence Audit
                 </Button>
               </Link>

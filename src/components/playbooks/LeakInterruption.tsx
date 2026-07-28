@@ -113,7 +113,7 @@ export function LeakInterruption() {
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                       {stage && (
-                        <Badge variant="soft" className="hidden sm:inline-flex">
+                        <Badge variant="info" className="hidden sm:inline-flex">
                           {stage.shortLabel}
                         </Badge>
                       )}
