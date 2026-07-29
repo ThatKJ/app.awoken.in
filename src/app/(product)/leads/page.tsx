@@ -13,7 +13,7 @@ const section: Variants = {
   }),
 }
 
-export default function LeadsPage() {
+export default function PipelinePage() {
   return (
     <div className="mx-auto flex max-w-[1400px] flex-col gap-6 py-6 px-5">
       <motion.div

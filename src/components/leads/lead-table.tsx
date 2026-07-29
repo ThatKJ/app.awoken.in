@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Sparkles, ChevronDown, MessageSquare, ExternalLink } from "lucide-react"
+import { Search, Sparkles, ChevronDown, MessageSquare, ExternalLink, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { LeadAvatar } from "@/components/leads/lead-avatar"
 import { Button } from "@/components/ui/button"
@@ -11,126 +11,132 @@ import { AiBrief } from "@/components/leads/ai-brief"
 type Lead = {
   id: string
   name: string
-  company: string
-  aiSummary: string
-  aiScore: number
   confidence: number
+  narrative: string
   source: string
   pipelineValue: string
   pipelineNumeric: number
   status: string
-  statusLabel: string
   worker: { name: string; action: string; time: string }
-  nextAction: string
-  nextActionTime: string
-  nextActionAI: boolean
+  recommendedAction: string
   lastMessage: string
+  aiSummary: string
+  aiReasons: string[]
+  needsYou: boolean
+  needsYouReason: string
 }
 
+const STATUS_CYCLES = ["Typing reply", "Qualifying lead", "Following up", "Checking CRM", "Updating record"]
+
 const leads: Lead[] = [
-  {
-    id: "1", name: "Rahul Patel", company: "Self-employed", aiSummary: "Looking for a 3BHK in Whitefield. Budget ₹1.4Cr. Requested callback tomorrow.",
-    aiScore: 92, confidence: 92, source: "Google Ads", pipelineValue: "₹1.2Cr", pipelineNumeric: 1.2,
-    status: "ready", statusLabel: "Ready", worker: { name: "Elena", action: "Responding", time: "2m" },
-    nextAction: "Schedule Visit", nextActionTime: "Tomorrow 11AM", nextActionAI: true,
-    lastMessage: "Can I visit this weekend?",
-  },
-  {
-    id: "2", name: "Priya Sharma", company: "TCS", aiSummary: "Pre-qualified for 2BHK in Wakad. Budget ₹85L. Ready for site visit.",
-    aiScore: 87, confidence: 87, source: "Website Form", pipelineValue: "₹85L", pipelineNumeric: 0.85,
-    status: "qualified", statusLabel: "Qualified", worker: { name: "Marcus", action: "Qualifying", time: "15m" },
-    nextAction: "Send Proposal", nextActionTime: "Today", nextActionAI: false,
-    lastMessage: "Shared requirements via form",
-  },
-  {
-    id: "3", name: "Amit Singh", company: "Infosys", aiSummary: "Interested in investment property. Budget ₹65L. Needs follow-up.",
-    aiScore: 45, confidence: 45, source: "Meta Ads", pipelineValue: "₹65L", pipelineNumeric: 0.65,
-    status: "review", statusLabel: "Needs Review", worker: { name: "Priya", action: "Analyzing", time: "1h" },
-    nextAction: "Initial Outreach", nextActionTime: "Tomorrow", nextActionAI: true,
-    lastMessage: "Asked about ROI projections",
-  },
-  {
-    id: "4", name: "Sneha Reddy", company: "Dental Clinic", aiSummary: "Looking for commercial space. Budget ₹1.5Cr. Has seen 3 properties.",
-    aiScore: 72, confidence: 72, source: "WhatsApp", pipelineValue: "₹1.5Cr", pipelineNumeric: 1.5,
-    status: "qualified", statusLabel: "Qualified", worker: { name: "Aria", action: "Follow-up", time: "3h" },
-    nextAction: "Day 1 Follow-up", nextActionTime: "Today", nextActionAI: false,
-    lastMessage: "Sent photos of 3 properties",
-  },
-  {
-    id: "5", name: "Vikram Joshi", company: "Wipro", aiSummary: "Nurturing — visited site 2 weeks ago. Needs re-engagement.",
-    aiScore: 34, confidence: 34, source: "Landing Page", pipelineValue: "₹95L", pipelineNumeric: 0.95,
-    status: "lost", statusLabel: "Lost", worker: { name: "Recovery", action: "Campaign #18", time: "1d" },
-    nextAction: "Re-engage", nextActionTime: "This week", nextActionAI: true,
-    lastMessage: "Not responding to emails",
-  },
-  {
-    id: "6", name: "Ananya Gupta", company: "Startup", aiSummary: "Ready to book 4BHK in Viman Nagar. Budget ₹2.1Cr. Awaiting confirmation.",
-    aiScore: 95, confidence: 95, source: "Google Ads", pipelineValue: "₹2.1Cr", pipelineNumeric: 2.1,
-    status: "ready", statusLabel: "Ready", worker: { name: "Elena", action: "Confirming", time: "30m" },
-    nextAction: "Confirm Visit", nextActionTime: "Tomorrow 11AM", nextActionAI: true,
-    lastMessage: "Confirmed availability",
-  },
-  {
-    id: "7", name: "Deepak Verma", company: "HDFC Bank", aiSummary: "Lost — went with competitor. Recoverable via callback campaign.",
-    aiScore: 12, confidence: 12, source: "CRM Import", pipelineValue: "₹0", pipelineNumeric: 0,
-    status: "lost", statusLabel: "Lost", worker: { name: "Recovery", action: "Campaign #19", time: "5d" },
-    nextAction: "Recovery Callback", nextActionTime: "Next week", nextActionAI: false,
-    lastMessage: "Chose competitor property",
-  },
-  {
-    id: "8", name: "Neha Kapoor", company: "Freelancer", aiSummary: "Was interested in 1BHK. Budget ₹55L. Recoverable via campaign.",
-    aiScore: 28, confidence: 28, source: "Meta Ads", pipelineValue: "₹55L", pipelineNumeric: 0.55,
-    status: "recoverable", statusLabel: "Recoverable", worker: { name: "Recovery", action: "Campaign #18", time: "2d" },
-    nextAction: "Re-engage", nextActionTime: "In progress", nextActionAI: true,
-    lastMessage: "Was out of town",
-  },
-  {
-    id: "9", name: "Rohan Desai", company: "Deloitte", aiSummary: "High intent — looking for 3BHK in Hinjewadi. Budget ₹1.8Cr. Pre-approved.",
-    aiScore: 88, confidence: 88, source: "WhatsApp", pipelineValue: "₹1.8Cr", pipelineNumeric: 1.8,
-    status: "qualified", statusLabel: "Qualified", worker: { name: "Marcus", action: "Qualifying", time: "45m" },
-    nextAction: "Schedule Viewing", nextActionTime: "Fri 4PM", nextActionAI: true,
-    lastMessage: "Sent loan approval letter",
-  },
-  {
-    id: "10", name: "Kavita Iyer", company: "Doctor", aiSummary: "New — enquired about 2BHK. Budget ₹72L. Needs initial call.",
-    aiScore: 55, confidence: 55, source: "Website Form", pipelineValue: "₹72L", pipelineNumeric: 0.72,
-    status: "review", statusLabel: "Needs Review", worker: { name: "Elena", action: "Drafting", time: "30m" },
-    nextAction: "Initial Outreach", nextActionTime: "Today", nextActionAI: false,
-    lastMessage: "Enquired via website form",
-  },
+  { id: "1", name: "Rahul Patel", confidence: 92, narrative: "Ready to close today", source: "Google Ads", pipelineValue: "₹1.2Cr", pipelineNumeric: 1.2, status: "ready", worker: { name: "Elena", action: "Typing reply", time: "2m" }, recommendedAction: "Schedule Site Visit", lastMessage: "Can I visit this weekend?", aiSummary: "Looking for a 3BHK in Whitefield. Budget ₹1.4Cr. Requested callback tomorrow.", aiReasons: ["Asked for site visit", "Opened brochure twice", "Replied within 4 min"], needsYou: true, needsYouReason: "Ready for callback" },
+  { id: "2", name: "Priya Sharma", confidence: 87, narrative: "Ready for site visit", source: "Website Form", pipelineValue: "₹85L", pipelineNumeric: 0.85, status: "qualified", worker: { name: "Marcus", action: "Qualifying lead", time: "15m" }, recommendedAction: "Send Proposal", lastMessage: "Shared requirements via form", aiSummary: "Pre-qualified for 2BHK in Wakad. Budget ₹85L.", aiReasons: ["Requested site visit", "Shared budget details", "High match score"], needsYou: false, needsYouReason: "" },
+  { id: "3", name: "Amit Singh", confidence: 45, narrative: "Stalled after first call", source: "Meta Ads", pipelineValue: "₹65L", pipelineNumeric: 0.65, status: "review", worker: { name: "Priya", action: "Checking CRM", time: "1h" }, recommendedAction: "Re-engagement Call", lastMessage: "Asked about ROI projections", aiSummary: "Interested in investment property. Budget ₹65L.", aiReasons: ["Dropped after first call", "Didn't open follow-up"], needsYou: true, needsYouReason: "Waiting approval" },
+  { id: "4", name: "Sneha Reddy", confidence: 72, narrative: "In follow-up sequence", source: "WhatsApp", pipelineValue: "₹1.5Cr", pipelineNumeric: 1.5, status: "qualified", worker: { name: "Aria", action: "Following up", time: "3h" }, recommendedAction: "Day 1 Follow-up", lastMessage: "Sent photos of 3 properties", aiSummary: "Looking for commercial space. Budget ₹1.5Cr.", aiReasons: ["Viewed 3 properties", "Asking detailed questions"], needsYou: false, needsYouReason: "" },
+  { id: "5", name: "Vikram Joshi", confidence: 34, narrative: "Not responding to outreach", source: "Landing Page", pipelineValue: "₹95L", pipelineNumeric: 0.95, status: "lost", worker: { name: "Recovery", action: "Campaign #18", time: "1d" }, recommendedAction: "Re-engage via WhatsApp", lastMessage: "Not responding to emails", aiSummary: "Visited site 2 weeks ago. Needs re-engagement.", aiReasons: ["Not opening emails", "Last visit 2 weeks ago"], needsYou: true, needsYouReason: "Recoverable" },
+  { id: "6", name: "Ananya Gupta", confidence: 95, narrative: "Ready to close today", source: "Google Ads", pipelineValue: "₹2.1Cr", pipelineNumeric: 2.1, status: "ready", worker: { name: "Elena", action: "Typing reply", time: "30m" }, recommendedAction: "Confirm Booking", lastMessage: "Confirmed availability", aiSummary: "Ready to book 4BHK in Viman Nagar. Budget ₹2.1Cr.", aiReasons: ["Confirmed availability", "Pre-approved for loan", "Ready to book"], needsYou: true, needsYouReason: "High-value deal" },
+  { id: "7", name: "Deepak Verma", confidence: 12, narrative: "Went with competitor", source: "CRM Import", pipelineValue: "₹0", pipelineNumeric: 0, status: "lost", worker: { name: "Recovery", action: "Campaign #19", time: "5d" }, recommendedAction: "Recovery Callback", lastMessage: "Chose competitor property", aiSummary: "Lost to competitor. Recoverable via callback.", aiReasons: ["Chose competitor", "No engagement in 5 days"], needsYou: false, needsYouReason: "" },
+  { id: "8", name: "Neha Kapoor", confidence: 28, narrative: "Recoverable via campaign", source: "Meta Ads", pipelineValue: "₹55L", pipelineNumeric: 0.55, status: "recoverable", worker: { name: "Recovery", action: "Campaign #18", time: "2d" }, recommendedAction: "Re-engage", lastMessage: "Was out of town", aiSummary: "Interested in 1BHK. Budget ₹55L.", aiReasons: ["Was out of town", "Low engagement"], needsYou: false, needsYouReason: "" },
+  { id: "9", name: "Rohan Desai", confidence: 88, narrative: "Pre-approved for loan", source: "WhatsApp", pipelineValue: "₹1.8Cr", pipelineNumeric: 1.8, status: "qualified", worker: { name: "Marcus", action: "Qualifying lead", time: "45m" }, recommendedAction: "Schedule Viewing", lastMessage: "Sent loan approval letter", aiSummary: "Looking for 3BHK in Hinjewadi. Budget ₹1.8Cr.", aiReasons: ["Sent loan approval", "Requested specific unit"], needsYou: false, needsYouReason: "" },
+  { id: "10", name: "Kavita Iyer", confidence: 55, narrative: "New — needs initial call", source: "Website Form", pipelineValue: "₹72L", pipelineNumeric: 0.72, status: "review", worker: { name: "Elena", action: "Updating record", time: "30m" }, recommendedAction: "Initial Outreach", lastMessage: "Enquired via website form", aiSummary: "Enquired about 2BHK. Budget ₹72L.", aiReasons: ["Just enquired", "No follow-up yet"], needsYou: false, needsYouReason: "" },
 ]
 
 const filters = ["All", "Qualified", "Review", "Recover", "Lost"]
 
-const statusColors: Record<string, string> = {
-  ready: "bg-success text-success border-success/20",
-  qualified: "bg-primary text-primary border-primary/20",
-  review: "bg-warning text-warning border-warning/20",
-  recoverable: "bg-info text-info border-info/20",
-  lost: "bg-muted-foreground/10 text-muted-foreground/60 border-transparent",
+const searchPlaceholders = [
+  "Ask your workforce...",
+  "Find buyers above ₹1Cr...",
+  "Show stalled leads...",
+  "Why did Rahul stop replying?...",
+  "Recover lost leads...",
+]
+
+function RotatingPlaceholder() {
+  const [index, setIndex] = useState(0)
+  useEffect(() => {
+    const interval = setInterval(() => setIndex((prev) => (prev + 1) % searchPlaceholders.length), 4000)
+    return () => clearInterval(interval)
+  }, [])
+  return (
+    <motion.span
+      key={index}
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -4 }}
+      transition={{ duration: 0.15 }}
+      className="text-muted-foreground/40"
+    >
+      {searchPlaceholders[index]}
+    </motion.span>
+  )
+}
+
+function WorkerStatus({ worker }: { worker: Lead["worker"] }) {
+  const [state, setState] = useState(0)
+  useEffect(() => {
+    const interval = setInterval(() => setState((prev) => (prev + 1) % STATUS_CYCLES.length), 2800)
+    return () => clearInterval(interval)
+  }, [])
+  return (
+    <span className="flex items-center gap-1.5">
+      <motion.span
+        key={STATUS_CYCLES[state]}
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -4 }}
+        transition={{ duration: 0.12 }}
+        className="text-xs text-muted-foreground/70"
+      >
+        {STATUS_CYCLES[state]}
+      </motion.span>
+      <span className="flex gap-0.5">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+            className="size-0.5 rounded-full bg-muted-foreground/40"
+          />
+        ))}
+      </span>
+    </span>
+  )
+}
+
+function StatusDot({ status, pulse = false }: { status: string; pulse?: boolean }) {
+  const colors: Record<string, string> = {
+    ready: "bg-success",
+    qualified: "bg-primary",
+    review: "bg-warning",
+    recoverable: "bg-info",
+    lost: "bg-muted-foreground/30",
+  }
+  return <span className={cn("size-1.5 rounded-full shrink-0", colors[status], pulse && "animate-pulse-dot")} />
+}
+
+const statusLabel: Record<string, string> = {
+  ready: "Ready",
+  qualified: "Qualified",
+  review: "Review",
+  recoverable: "Recoverable",
+  lost: "Lost",
 }
 
 function getStatusGroup(lead: Lead): string {
-  if (lead.status === "qualified" || lead.status === "ready") return "Qualified"
+  if (lead.status === "ready") return "Qualified"
+  if (lead.status === "qualified") return "Qualified"
   if (lead.status === "review") return "Review"
   if (lead.status === "recoverable") return "Recover"
   if (lead.status === "lost") return "Lost"
   return "All"
 }
 
-function confidenceLabel(value: number): { label: string; color: string } {
-  if (value >= 80) return { label: "High Intent", color: "text-success" }
-  if (value >= 50) return { label: "Moderate", color: "text-warning" }
-  return { label: "Low", color: "text-muted-foreground/50" }
-}
-
-function ActionButton({ lead }: { lead: Lead }) {
-  return (
-    <div className="flex items-center gap-1.5 shrink-0">
-      <span className="text-xs font-medium text-foreground">{lead.nextAction}</span>
-      <ChevronDown className="size-3 -rotate-90 text-muted-foreground/40" strokeWidth={2} />
-    </div>
-  )
+const needsYouOrder: Record<string, number> = {
+  ready: 0,
+  review: 1,
+  recoverable: 2,
+  lost: 3,
+  qualified: 4,
 }
 
 export function LeadTable() {
@@ -143,13 +149,14 @@ export function LeadTable() {
     if (activeFilter !== "All" && getStatusGroup(l) !== activeFilter) return false
     if (search) {
       const q = search.toLowerCase()
-      if (!l.name.toLowerCase().includes(q) && !l.company.toLowerCase().includes(q) && !l.source.toLowerCase().includes(q)) return false
+      if (!l.name.toLowerCase().includes(q) && !l.source.toLowerCase().includes(q)) return false
     }
     return true
   })
 
   const activeCount = leads.filter((l) => l.status === "ready" || l.status === "qualified").length
   const pipelineTotal = leads.reduce((s, l) => s + l.pipelineNumeric, 0)
+  const needsYouItems = [...leads.filter((l) => l.needsYou)].sort((a, b) => needsYouOrder[a.status] - needsYouOrder[b.status])
 
   return (
     <div className="flex flex-col gap-5">
@@ -163,23 +170,45 @@ export function LeadTable() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" className="text-xs">Export</Button>
-          <Button size="sm" className="text-xs">+ New Lead</Button>
+          <Button size="sm" className="text-xs">+ New</Button>
         </div>
       </div>
 
       {/* AI Brief */}
       <AiBrief />
 
-      {/* Toolbar */}
+      {/* Needs Attention */}
+      <div className="flex items-center gap-3 rounded-xl border border-border/40 bg-card px-4 py-2.5">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground shrink-0">Needs Attention</span>
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+          {needsYouItems.map((item) => (
+            <button
+              key={item.id}
+              className="flex items-center gap-1.5 rounded-lg border border-border/30 px-2 py-1 text-xs transition-colors hover:bg-muted/30 hover:border-border/60 shrink-0"
+            >
+              <StatusDot status={item.status} pulse />
+              <span className="text-xs font-medium text-foreground/80">{item.name}</span>
+              <span className="text-[10px] text-muted-foreground/60">{item.needsYouReason}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Search + Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground/50" strokeWidth={2} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search leads..."
-            className="h-8 w-full rounded-lg border border-border bg-card pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground/40 outline-none transition-colors focus:border-primary/50"
+            placeholder=" "
+            className="h-8 w-full rounded-lg border border-border bg-card pl-8 pr-3 text-xs text-foreground outline-none transition-colors focus:border-primary/50 placeholder:text-transparent"
           />
+          {!search && (
+            <div className="pointer-events-none absolute left-8 top-1/2 -translate-y-1/2 text-xs">
+              <RotatingPlaceholder />
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-0.5 rounded-lg bg-muted/50 p-0.5">
@@ -200,12 +229,10 @@ export function LeadTable() {
       </div>
 
       {/* Feed */}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         {filtered.map((lead, i) => {
           const isHovered = hoveredId === lead.id
           const isExpanded = expandedId === lead.id
-          const conf = confidenceLabel(lead.confidence)
-          const statusStyle = statusColors[lead.status]
 
           return (
             <motion.div
@@ -218,115 +245,150 @@ export function LeadTable() {
                 onMouseEnter={() => setHoveredId(lead.id)}
                 onMouseLeave={() => setHoveredId(null)}
                 className={cn(
-                  "group cursor-pointer rounded-xl border transition-all duration-100",
+                  "group cursor-pointer rounded-xl border transition-all duration-150",
                   isExpanded
-                    ? "border-primary/20 bg-primary-light/40 shadow-sm"
+                    ? "border-primary/30 bg-primary-light/40 shadow-sm"
                     : isHovered
-                    ? "border-border-hover bg-card shadow-sm"
-                    : "border-transparent bg-transparent hover:border-border/50 hover:bg-muted/10"
+                    ? "border-primary/20 bg-card shadow-md -translate-y-0.5"
+                    : "border-transparent bg-transparent hover:border-border/40 hover:bg-muted/10"
                 )}
               >
-                {/* Main row */}
-                <button
+                <div
                   onClick={() => setExpandedId(isExpanded ? null : lead.id)}
-                  className="flex w-full items-start gap-4 px-4 py-3 text-left"
+                  onKeyDown={(e) => { if (e.key === "Enter") setExpandedId(isExpanded ? null : lead.id) }}
+                  tabIndex={0}
+                  role="button"
+                  className="flex w-full flex-col px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
                 >
-                  {/* Identity: Avatar + Name + Score */}
-                  <div className="flex items-start gap-3 min-w-0 flex-1">
-                    <LeadAvatar name={lead.name} source={lead.source} size="sm" />
-                    <div className="min-w-0 pt-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-foreground">{lead.name}</span>
-                        <span className="text-[10px] tabular-nums font-medium text-muted-foreground/50">{lead.aiScore}</span>
-                      </div>
-                      <p className="text-[12px] text-muted-foreground leading-snug line-clamp-1">{lead.aiSummary}</p>
-                      <span className="text-[10px] text-muted-foreground/40 mt-0.5 block">{lead.pipelineValue}</span>
+                  {/* Name + Status dot */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <LeadAvatar name={lead.name} source={lead.source} size="sm" />
+                      <span className="text-sm font-semibold text-foreground">{lead.name}</span>
                     </div>
+                    <span className="text-[9px] text-muted-foreground/40 font-medium shrink-0 tabular-nums">{lead.source}</span>
                   </div>
 
-                  {/* Status */}
-                  <div className="hidden md:flex items-center gap-1.5 min-w-[80px] pt-1">
-                    <span className={cn("size-2 rounded-full shrink-0", statusColors[lead.status].split(" ")[0])} />
-                    <span className={cn("text-[11px] font-medium", statusColors[lead.status].split(" ")[1])}>
-                      {lead.statusLabel}
+                  {/* Narrative */}
+                  <div className="flex items-center gap-2 mt-1.5 ml-[36px]">
+                    <StatusDot status={lead.status} pulse={lead.status === "ready"} />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-foreground/70">
+                      {lead.narrative}
                     </span>
+                  </div>
+
+                  {/* Value */}
+                  <div className="ml-[36px] mt-0.5">
+                    <span className="text-base font-bold text-foreground tabular-nums">{lead.pipelineValue}</span>
                   </div>
 
                   {/* Worker */}
-                  <div className="hidden lg:block min-w-[100px] pt-1">
-                    <p className="text-xs font-medium text-foreground">{lead.worker.name}</p>
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] text-muted-foreground/60">{lead.worker.action}</span>
-                      <span className="text-[10px] text-muted-foreground/30">&middot;</span>
-                      <span className="text-[10px] text-muted-foreground/40 tabular-nums">{lead.worker.time}</span>
+                  <div className="flex items-center gap-2 mt-2 ml-[36px]">
+                    <StatusDot status="ready" pulse />
+                    <span className="text-xs font-medium text-foreground/80">{lead.worker.name}</span>
+                    <WorkerStatus worker={lead.worker} />
+                    <span className="text-[10px] text-muted-foreground/40 tabular-nums">{lead.worker.time}</span>
+                  </div>
+
+                  {/* Why AI thinks this */}
+                  <div className="ml-[36px] mt-1.5">
+                    <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/40">Why AI thinks this</span>
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                      {lead.aiReasons.map((reason) => (
+                        <span key={reason} className="flex items-center gap-1 text-[11px] text-foreground/70">
+                          <span className="text-success/70">✓</span>
+                          {reason}
+                        </span>
+                      ))}
                     </div>
                   </div>
 
-                  {/* AI Confidence */}
-                  <div className="hidden sm:flex flex-col items-end min-w-[70px] pt-1">
-                    <span className={cn("text-sm font-semibold tabular-nums leading-none", conf.color)}>
-                      {lead.confidence}%
-                    </span>
-                    <span className={cn("text-[10px] font-medium mt-0.5", conf.color)}>{conf.label}</span>
+                  {/* Confidence */}
+                  <div className="flex items-center gap-2 mt-2 ml-[36px] pt-1.5 border-t border-border/10">
+                    <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/50">AI Confidence</span>
+                    <div className="flex-1 flex items-center gap-2">
+                      <span className={cn(
+                        "text-xs font-bold tabular-nums",
+                        lead.confidence >= 80 ? "text-success" : lead.confidence >= 50 ? "text-warning" : "text-destructive"
+                      )}>
+                        {lead.confidence}%
+                      </span>
+                      <div className="flex-1 max-w-[100px] h-0.5 overflow-hidden rounded-full bg-muted">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${lead.confidence}%` }}
+                          transition={{ duration: 0.5, ease: "easeOut" }}
+                          className={cn(
+                            "h-full rounded-full",
+                            lead.confidence >= 80 ? "bg-success" : lead.confidence >= 50 ? "bg-warning" : "bg-destructive"
+                          )}
+                        />
+                      </div>
+                      <span className={cn(
+                        "text-[10px] font-medium",
+                        lead.confidence >= 80 ? "text-success" : lead.confidence >= 50 ? "text-warning" : "text-destructive"
+                      )}>
+                        {lead.confidence >= 80 ? "Very High" : lead.confidence >= 50 ? "Medium" : "Low"}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Action (always last column) */}
-                  <div className="hidden 2xl:flex items-center gap-1.5 pt-1 min-w-fit shrink-0">
-                    <span className="text-xs font-medium text-foreground">{lead.nextAction}</span>
-                    {lead.nextActionAI && (
-                      <span className="rounded bg-primary/10 px-1 py-0.5 text-[9px] font-semibold text-primary leading-none">AI</span>
-                    )}
-                    <ChevronDown className="size-3 -rotate-90 text-muted-foreground/30" strokeWidth={2} />
+                  {/* Action */}
+                  <div className="flex items-center gap-2 mt-2 ml-[36px] pt-2 border-t border-border/10">
+                    <span className="text-xs font-medium text-primary">{lead.recommendedAction}</span>
+                    <ChevronDown className="size-3 -rotate-90 text-primary/60" strokeWidth={2} />
+                    <div className="flex-1" />
+                    <div className={cn(
+                      "flex items-center gap-1.5 transition-opacity duration-100",
+                      isHovered ? "opacity-100" : "opacity-0"
+                    )}>
+                      <span className="cursor-pointer rounded-md bg-primary/10 px-2 py-1 text-[10px] font-medium text-primary transition-colors hover:bg-primary/20">
+                        Approve
+                      </span>
+                      <span className="cursor-pointer rounded-md px-2 py-1 text-[10px] font-medium text-muted-foreground/60 transition-colors hover:bg-muted/30">
+                        Dismiss
+                      </span>
+                    </div>
                   </div>
-                </button>
 
-                {/* Hover band: AI summary + last message */}
-                <AnimatePresence>
-                  {isHovered && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.1, ease: "easeOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="border-t border-border/20 px-4 py-2.5">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[12px] text-foreground/80 leading-relaxed">{lead.aiSummary}</p>
-                            <p className="text-[11px] text-muted-foreground/60 mt-1">
-                              Last message: &ldquo;{lead.lastMessage}&rdquo;
-                            </p>
-                          </div>
-                          <button className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-primary transition-colors hover:text-primary/80">
+                  {/* Hover band */}
+                  <AnimatePresence>
+                    {isHovered && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.1, ease: "easeOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex items-start justify-between gap-4 mt-1.5 ml-[36px] pt-1.5 border-t border-border/10">
+                          <p className="text-[11px] text-muted-foreground/70 leading-relaxed flex-1">{lead.aiSummary}</p>
+                          <button className="flex shrink-0 items-center gap-1 text-[10px] font-medium text-primary/70 transition-colors hover:text-primary">
                             View Conversation
-                            <ExternalLink className="size-3" strokeWidth={2} />
+                            <ExternalLink className="size-2.5" strokeWidth={2} />
                           </button>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                {/* Expanded band */}
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.15, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="border-t border-border/20 px-4 py-3">
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="col-span-2">
-                            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">AI Summary</span>
-                            <p className="text-sm text-foreground mt-1 leading-relaxed">{lead.aiSummary}</p>
-                            <div className="flex items-center gap-2 mt-3">
+                  {/* Expanded detail */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.15, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="grid grid-cols-2 gap-4 mt-2 ml-[36px] pt-3 border-t border-border/20">
+                          <div>
+                            <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/40">AI Summary</span>
+                            <p className="text-xs text-foreground/80 mt-1 leading-relaxed">{lead.aiSummary}</p>
+                            <div className="flex items-center gap-2 mt-2">
                               <Button size="sm" variant="primary">
-                                {lead.nextActionAI && <Sparkles className="size-3" strokeWidth={2} />}
-                                {lead.nextAction}
+                                {lead.recommendedAction}
                               </Button>
                               <Button size="sm" variant="secondary">
                                 <MessageSquare className="size-3.5" strokeWidth={2} />
@@ -335,34 +397,34 @@ export function LeadTable() {
                             </div>
                           </div>
                           <div>
-                            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">Activity</span>
-                            <div className="relative pl-3 mt-2 border-l-2 border-border/30 space-y-2">
+                            <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/40">Activity</span>
+                            <div className="relative pl-3 mt-2 border-l-2 border-border/20 space-y-2">
                               {[
-                                { text: `${lead.worker.name} ${lead.worker.action.toLowerCase()}`, time: lead.worker.time },
+                                { text: `${lead.worker.name} is ${lead.worker.action.toLowerCase()}...`, time: lead.worker.time },
                                 { text: "Lead captured via " + lead.source, time: "Yesterday" },
-                              ].map((e, i) => (
-                                <div key={i} className="relative">
+                              ].map((e, j) => (
+                                <div key={j} className="relative">
                                   <span className="absolute -left-[11px] top-1 size-1.5 rounded-full bg-border" />
-                                  <p className="text-[12px] text-foreground leading-snug">{e.text}</p>
-                                  <span className="text-[10px] text-muted-foreground/50">{e.time}</span>
+                                  <p className="text-[11px] text-foreground leading-snug">{e.text}</p>
+                                  <span className="text-[9px] text-muted-foreground/50">{e.time}</span>
                                 </div>
                               ))}
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             </motion.div>
           )
         })}
       </div>
 
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-muted-foreground/60">
-          {filtered.length} of {leads.length} leads
+      <div className="flex items-center justify-between pt-1">
+        <span className="text-[11px] text-muted-foreground/50">
+          {filtered.length} of {leads.length} opportunities
         </span>
       </div>
     </div>
