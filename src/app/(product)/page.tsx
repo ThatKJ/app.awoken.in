@@ -24,15 +24,14 @@ export default function CommandCenterPage() {
         <HeroMetric />
       </motion.div>
 
-      <motion.div custom={1} variants={section} initial="hidden" animate="visible">
+      <motion.div custom={2} variants={section} initial="hidden" animate="visible">
         <StatusStrip />
       </motion.div>
 
-      <motion.div custom={2} variants={section} initial="hidden" animate="visible">
+      <motion.div custom={3} variants={section} initial="hidden" animate="visible">
         <AiRecommendation />
       </motion.div>
 
-      {/* Live Operations */}
       <div>
         <div className="flex items-center gap-3 mb-4">
           <div className="h-px flex-1 bg-border/30" />
@@ -43,7 +42,7 @@ export default function CommandCenterPage() {
         </div>
 
         <motion.div
-          custom={3}
+          custom={5}
           variants={section}
           initial="hidden"
           animate="visible"
@@ -58,8 +57,7 @@ export default function CommandCenterPage() {
         </motion.div>
       </div>
 
-      {/* Live Activity */}
-      <motion.div custom={4} variants={section} initial="hidden" animate="visible">
+      <motion.div custom={6} variants={section} initial="hidden" animate="visible">
         <div className="bg-card rounded-xl border border-border p-4">
           <ActivityFeed />
         </div>

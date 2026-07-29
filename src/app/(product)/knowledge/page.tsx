@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { motion, type Variants } from "framer-motion"
-import { SectionHeader } from "@/components/shared/section-header"
 import { KnowledgeSidebar } from "@/components/knowledge/knowledge-sidebar"
 import { KnowledgeCard } from "@/components/knowledge/knowledge-card"
 import { KnowledgePreview } from "@/components/knowledge/knowledge-preview"
@@ -12,7 +11,8 @@ import { KnowledgeUploader } from "@/components/knowledge/knowledge-uploader"
 import { KnowledgeEmptyState } from "@/components/knowledge/knowledge-empty-state"
 import { useFolders, useKnowledgeDocuments, useKnowledgeAnalytics, useKnowledgeSearch, useDeleteDocument, useUploadDocument } from "@/hooks/use-knowledge"
 import { cn } from "@/lib/utils"
-import { Plus, Upload, LayoutGrid, List } from "lucide-react"
+import { Plus, Upload } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const section: Variants = {
   hidden: { opacity: 0, y: 12 },
@@ -50,44 +50,27 @@ export default function KnowledgePage() {
 
   return (
     <div className="mx-auto flex max-w-[1400px] flex-col gap-5 py-6 px-5">
-      {/* Header */}
-      <motion.div custom={0} variants={section} initial="hidden" animate="visible" className="flex items-start justify-between">
-        <SectionHeader
-          title="Knowledge"
-          description="Everything your AI workforce knows."
-        />
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowUploader(true)}
-            className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            <Upload className="size-4" />
-            Upload
-          </button>
-          <button
-            className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:border-primary/30 transition-colors"
-          >
-            <Plus className="size-4" />
-            New Folder
-          </button>
+      <motion.div custom={0} variants={section} initial="hidden" animate="visible">
+        <div className="flex items-center justify-between mb-4">
+          <div />
+          <div className="flex items-center gap-2">
+            <Button onClick={() => setShowUploader(true)} size="sm"><Upload className="size-4" />Upload</Button>
+            <Button variant="secondary" size="sm"><Plus className="size-4" />New Folder</Button>
+          </div>
         </div>
       </motion.div>
 
-      {/* Stats */}
       {stats && (
         <motion.div custom={1} variants={section} initial="hidden" animate="visible">
           <KnowledgeStatsGrid stats={stats} />
         </motion.div>
       )}
 
-      {/* Search */}
       <motion.div custom={2} variants={section} initial="hidden" animate="visible" className="max-w-md">
         <KnowledgeSearch value={searchQuery} onChange={setSearchQuery} />
       </motion.div>
 
-      {/* Three-panel layout */}
       <div className="flex gap-5">
-        {/* Sidebar */}
         <motion.div custom={3} variants={section} initial="hidden" animate="visible" className="shrink-0">
           {folders && (
             <KnowledgeSidebar
@@ -98,7 +81,6 @@ export default function KnowledgePage() {
           )}
         </motion.div>
 
-        {/* Document Grid */}
         <motion.div
           custom={4}
           variants={section}
@@ -127,7 +109,6 @@ export default function KnowledgePage() {
           </div>
         </motion.div>
 
-        {/* Preview panel */}
         {selectedDoc && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -143,7 +124,6 @@ export default function KnowledgePage() {
         )}
       </div>
 
-      {/* Upload dialog */}
       <KnowledgeUploader
         open={showUploader}
         onClose={() => setShowUploader(false)}

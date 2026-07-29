@@ -9,14 +9,14 @@ export function AppLogo({ className }: AppLogoProps) {
   return (
     <Link href="/" className={cn("flex items-center shrink-0", className)}>
       <img
-        src="/logo.svg"
+        src="/awoken-wordmark-black.svg"
         alt="Awoken"
-        className="w-auto h-16 sm:h-20 md:h-20 block dark:hidden"
+        className="block h-9 w-auto dark:hidden"
       />
       <img
-        src="/logo-light.svg"
+        src="/awoken-wordmark-white.svg"
         alt="Awoken"
-        className="w-auto h-16 sm:h-20 md:h-20 hidden dark:block"
+        className="hidden h-9 w-auto dark:block"
       />
     </Link>
   )

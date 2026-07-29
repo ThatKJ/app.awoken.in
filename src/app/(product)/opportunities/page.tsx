@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { motion, type Variants } from "framer-motion"
-import { SectionHeader } from "@/components/shared/section-header"
 import { OpportunitySummaryMetrics } from "@/components/opportunities/opportunity-summary"
 import { OpportunityBoard } from "@/components/opportunities/opportunity-board"
 import { OpportunityDrawer } from "@/components/opportunities/opportunity-drawer"
@@ -46,21 +45,12 @@ export default function OpportunitiesPage() {
 
   return (
     <div className="mx-auto flex max-w-[1400px] flex-col gap-5 py-6 px-5">
-      {/* Summary */}
-      <motion.div custom={0} variants={section} initial="hidden" animate="visible">
-        <SectionHeader
-          title="Revenue Pipeline"
-          description="Track and move opportunities through the sales pipeline"
-        />
-      </motion.div>
-
       {analytics && (
-        <motion.div custom={1} variants={section} initial="hidden" animate="visible">
+        <motion.div custom={0} variants={section} initial="hidden" animate="visible">
           <OpportunitySummaryMetrics {...analytics} />
         </motion.div>
       )}
 
-      {/* Filters */}
       <motion.div custom={2} variants={section} initial="hidden" animate="visible">
         <OpportunityFilters
           search={search}
@@ -72,7 +62,6 @@ export default function OpportunitiesPage() {
         />
       </motion.div>
 
-      {/* Kanban Board */}
       <motion.div custom={3} variants={section} initial="hidden" animate="visible">
         <OpportunityBoard
           opportunities={filtered}
@@ -81,7 +70,6 @@ export default function OpportunitiesPage() {
         />
       </motion.div>
 
-      {/* Detail Drawer */}
       <OpportunityDrawer
         opportunity={selectedOpportunity}
         open={!!selectedId}

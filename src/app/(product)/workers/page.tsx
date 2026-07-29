@@ -5,7 +5,6 @@ import {
   MessageCircle, Filter, Repeat, RotateCcw, CalendarCheck, Users,
 } from "lucide-react"
 import { motion, type Variants } from "framer-motion"
-import { SectionHeader } from "@/components/shared/section-header"
 import { Filters } from "@/components/shared/filters"
 import { WorkerGrid } from "@/components/workers/worker-grid"
 import { LoadingState } from "@/components/shared/loading-state"
@@ -105,34 +104,25 @@ export default function WorkersPage() {
 
   if (!workers.length) {
     return (
-<div className="mx-auto flex max-w-[1400px] flex-col gap-5 py-6 px-5">
+      <div className="mx-auto flex max-w-[1400px] flex-col gap-5 py-6 px-5">
         <EmptyState icon={Users} title="No workers configured" description="Add your first worker to start automating your workflow." action={{ label: "Add Worker" }} />
       </div>
     )
   }
 
-  const healthyCount = workers.filter((w) => w.health === "healthy").length
-
   return (
-    <div className="mx-auto flex max-w-[1280px] flex-col gap-6 py-6">
-      <motion.div custom={0} variants={section} initial="hidden" animate="visible">
-        <SectionHeader
-          title="Workforce"
-          description={`${workers.length} workers · ${healthyCount} operational`}
-          action={<Button size="sm"><Users className="size-4" />Add Worker</Button>}
-        />
-      </motion.div>
-
-      <motion.div custom={1} variants={section} initial="hidden" animate="visible">
+    <div className="mx-auto flex max-w-[1400px] flex-col gap-6 py-6 px-5">
+      <motion.div custom={0} variants={section} initial="hidden" animate="visible" className="flex items-center justify-between gap-4">
         <Filters
           options={filterOptions}
           active={activeFilter}
           onChange={setActiveFilter}
           search={{ value: search, onChange: setSearch, placeholder: "Search workers..." }}
         />
+        <Button size="sm" className="shrink-0"><Users className="size-4" />Add Worker</Button>
       </motion.div>
 
-      <motion.div custom={2} variants={section} initial="hidden" animate="visible">
+      <motion.div custom={1} variants={section} initial="hidden" animate="visible">
         <WorkerGrid workers={workers} onWorkerClick={() => {}} />
       </motion.div>
     </div>

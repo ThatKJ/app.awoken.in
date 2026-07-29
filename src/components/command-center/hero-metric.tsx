@@ -124,7 +124,7 @@ export function HeroMetric() {
           </div>
         </div>
         <span className="block mt-1 text-[10px] text-muted-foreground/60 tabular-nums">
-          Updated 34s ago &bullet; Syncing every 15s
+          Updated 34s ago &bull; Syncing every 15s
         </span>
       </div>
 

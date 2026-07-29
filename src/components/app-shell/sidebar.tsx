@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { navigation } from "@/lib/navigation"
 import { NavSection } from "@/components/navigation/nav-section"
@@ -23,19 +22,22 @@ export function Sidebar({ collapsed, onToggleCollapse: _, mobileOpen: __, onMobi
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-sidebar-border/60 px-5">
+      <div className="flex h-16 shrink-0 items-center border-b border-sidebar-border/60 px-5">
         <Link
           href="/"
-          className="flex items-center gap-3 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+          className="flex items-center outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
           aria-label="Awoken Home"
         >
-          <div className="flex size-7 items-center justify-center rounded-lg bg-primary">
-            <Sparkles className="size-4 text-primary-foreground" strokeWidth={2} />
-          </div>
-          <div>
-            <span className="text-sm font-bold text-sidebar-foreground">Awoken</span>
-            <span className="block text-[10px] font-medium text-sidebar-foreground/40">AI Operating System</span>
-          </div>
+          <img
+            src="/awoken-wordmark-black.svg"
+            alt="Awoken"
+            className="block h-23  w-auto dark:hidden"
+          />
+          <img
+            src="/awoken-wordmark-white.svg"
+            alt="Awoken"
+            className="hidden h-23 w-auto dark:block"
+          />
         </Link>
       </div>
 

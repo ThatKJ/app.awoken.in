@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Sparkles, ChevronDown, MessageSquare, ExternalLink, CheckCircle2 } from "lucide-react"
+import { Search, Sparkles, ChevronDown, MessageSquare, ExternalLink, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { LeadAvatar } from "@/components/leads/lead-avatar"
 import { Button } from "@/components/ui/button"
 import { AiBrief } from "@/components/leads/ai-brief"
-
 type Lead = {
   id: string
   name: string
@@ -36,7 +35,6 @@ const leads: Lead[] = [
   { id: "5", name: "Vikram Joshi", confidence: 34, narrative: "Not responding to outreach", source: "Landing Page", pipelineValue: "₹95L", pipelineNumeric: 0.95, status: "lost", worker: { name: "Recovery", action: "Campaign #18", time: "1d" }, recommendedAction: "Re-engage via WhatsApp", lastMessage: "Not responding to emails", aiSummary: "Visited site 2 weeks ago. Needs re-engagement.", aiReasons: ["Not opening emails", "Last visit 2 weeks ago"], needsYou: true, needsYouReason: "Recoverable" },
   { id: "6", name: "Ananya Gupta", confidence: 95, narrative: "Ready to close today", source: "Google Ads", pipelineValue: "₹2.1Cr", pipelineNumeric: 2.1, status: "ready", worker: { name: "Elena", action: "Typing reply", time: "30m" }, recommendedAction: "Confirm Booking", lastMessage: "Confirmed availability", aiSummary: "Ready to book 4BHK in Viman Nagar. Budget ₹2.1Cr.", aiReasons: ["Confirmed availability", "Pre-approved for loan", "Ready to book"], needsYou: true, needsYouReason: "High-value deal" },
   { id: "7", name: "Deepak Verma", confidence: 12, narrative: "Went with competitor", source: "CRM Import", pipelineValue: "₹0", pipelineNumeric: 0, status: "lost", worker: { name: "Recovery", action: "Campaign #19", time: "5d" }, recommendedAction: "Recovery Callback", lastMessage: "Chose competitor property", aiSummary: "Lost to competitor. Recoverable via callback.", aiReasons: ["Chose competitor", "No engagement in 5 days"], needsYou: false, needsYouReason: "" },
-  { id: "8", name: "Neha Kapoor", confidence: 28, narrative: "Recoverable via campaign", source: "Meta Ads", pipelineValue: "₹55L", pipelineNumeric: 0.55, status: "recoverable", worker: { name: "Recovery", action: "Campaign #18", time: "2d" }, recommendedAction: "Re-engage", lastMessage: "Was out of town", aiSummary: "Interested in 1BHK. Budget ₹55L.", aiReasons: ["Was out of town", "Low engagement"], needsYou: false, needsYouReason: "" },
   { id: "9", name: "Rohan Desai", confidence: 88, narrative: "Pre-approved for loan", source: "WhatsApp", pipelineValue: "₹1.8Cr", pipelineNumeric: 1.8, status: "qualified", worker: { name: "Marcus", action: "Qualifying lead", time: "45m" }, recommendedAction: "Schedule Viewing", lastMessage: "Sent loan approval letter", aiSummary: "Looking for 3BHK in Hinjewadi. Budget ₹1.8Cr.", aiReasons: ["Sent loan approval", "Requested specific unit"], needsYou: false, needsYouReason: "" },
   { id: "10", name: "Kavita Iyer", confidence: 55, narrative: "New — needs initial call", source: "Website Form", pipelineValue: "₹72L", pipelineNumeric: 0.72, status: "review", worker: { name: "Elena", action: "Updating record", time: "30m" }, recommendedAction: "Initial Outreach", lastMessage: "Enquired via website form", aiSummary: "Enquired about 2BHK. Budget ₹72L.", aiReasons: ["Just enquired", "No follow-up yet"], needsYou: false, needsYouReason: "" },
 ]
@@ -114,30 +112,15 @@ function StatusDot({ status, pulse = false }: { status: string; pulse?: boolean 
   return <span className={cn("size-1.5 rounded-full shrink-0", colors[status], pulse && "animate-pulse-dot")} />
 }
 
-const statusLabel: Record<string, string> = {
-  ready: "Ready",
-  qualified: "Qualified",
-  review: "Review",
-  recoverable: "Recoverable",
-  lost: "Lost",
-}
-
 function getStatusGroup(lead: Lead): string {
-  if (lead.status === "ready") return "Qualified"
-  if (lead.status === "qualified") return "Qualified"
+  if (lead.status === "ready" || lead.status === "qualified") return "Qualified"
   if (lead.status === "review") return "Review"
   if (lead.status === "recoverable") return "Recover"
   if (lead.status === "lost") return "Lost"
   return "All"
 }
 
-const needsYouOrder: Record<string, number> = {
-  ready: 0,
-  review: 1,
-  recoverable: 2,
-  lost: 3,
-  qualified: 4,
-}
+const needsYouOrder: Record<string, number> = { ready: 0, review: 1, recoverable: 2, lost: 3, qualified: 4 }
 
 export function LeadTable() {
   const [activeFilter, setActiveFilter] = useState("All")
@@ -154,30 +137,20 @@ export function LeadTable() {
     return true
   })
 
-  const activeCount = leads.filter((l) => l.status === "ready" || l.status === "qualified").length
-  const pipelineTotal = leads.reduce((s, l) => s + l.pipelineNumeric, 0)
   const needsYouItems = [...leads.filter((l) => l.needsYou)].sort((a, b) => needsYouOrder[a.status] - needsYouOrder[b.status])
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold text-foreground">Leads</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {activeCount} active &middot; ₹{pipelineTotal}Cr pipeline
-          </p>
-        </div>
+        <div />
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" className="text-xs">Export</Button>
           <Button size="sm" className="text-xs">+ New</Button>
         </div>
       </div>
 
-      {/* AI Brief */}
       <AiBrief />
 
-      {/* Needs Attention */}
       <div className="flex items-center gap-3 rounded-xl border border-border/40 bg-card px-4 py-2.5">
         <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground shrink-0">Needs Attention</span>
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
@@ -194,7 +167,6 @@ export function LeadTable() {
         </div>
       </div>
 
-      {/* Search + Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground/50" strokeWidth={2} />
@@ -228,7 +200,6 @@ export function LeadTable() {
         </div>
       </div>
 
-      {/* Feed */}
       <div className="flex flex-col gap-2">
         {filtered.map((lead, i) => {
           const isHovered = hoveredId === lead.id
@@ -260,7 +231,6 @@ export function LeadTable() {
                   role="button"
                   className="flex w-full flex-col px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
                 >
-                  {/* Name + Status dot */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <LeadAvatar name={lead.name} source={lead.source} size="sm" />
@@ -269,7 +239,6 @@ export function LeadTable() {
                     <span className="text-[9px] text-muted-foreground/40 font-medium shrink-0 tabular-nums">{lead.source}</span>
                   </div>
 
-                  {/* Narrative */}
                   <div className="flex items-center gap-2 mt-1.5 ml-[36px]">
                     <StatusDot status={lead.status} pulse={lead.status === "ready"} />
                     <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-foreground/70">
@@ -277,12 +246,10 @@ export function LeadTable() {
                     </span>
                   </div>
 
-                  {/* Value */}
                   <div className="ml-[36px] mt-0.5">
                     <span className="text-base font-bold text-foreground tabular-nums">{lead.pipelineValue}</span>
                   </div>
 
-                  {/* Worker */}
                   <div className="flex items-center gap-2 mt-2 ml-[36px]">
                     <StatusDot status="ready" pulse />
                     <span className="text-xs font-medium text-foreground/80">{lead.worker.name}</span>
@@ -290,7 +257,6 @@ export function LeadTable() {
                     <span className="text-[10px] text-muted-foreground/40 tabular-nums">{lead.worker.time}</span>
                   </div>
 
-                  {/* Why AI thinks this */}
                   <div className="ml-[36px] mt-1.5">
                     <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/40">Why AI thinks this</span>
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
@@ -303,7 +269,6 @@ export function LeadTable() {
                     </div>
                   </div>
 
-                  {/* Confidence */}
                   <div className="flex items-center gap-2 mt-2 ml-[36px] pt-1.5 border-t border-border/10">
                     <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/50">AI Confidence</span>
                     <div className="flex-1 flex items-center gap-2">
@@ -333,7 +298,6 @@ export function LeadTable() {
                     </div>
                   </div>
 
-                  {/* Action */}
                   <div className="flex items-center gap-2 mt-2 ml-[36px] pt-2 border-t border-border/10">
                     <span className="text-xs font-medium text-primary">{lead.recommendedAction}</span>
                     <ChevronDown className="size-3 -rotate-90 text-primary/60" strokeWidth={2} />
@@ -351,7 +315,6 @@ export function LeadTable() {
                     </div>
                   </div>
 
-                  {/* Hover band */}
                   <AnimatePresence>
                     {isHovered && (
                       <motion.div
@@ -372,7 +335,6 @@ export function LeadTable() {
                     )}
                   </AnimatePresence>
 
-                  {/* Expanded detail */}
                   <AnimatePresence>
                     {isExpanded && (
                       <motion.div
@@ -387,13 +349,8 @@ export function LeadTable() {
                             <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/40">AI Summary</span>
                             <p className="text-xs text-foreground/80 mt-1 leading-relaxed">{lead.aiSummary}</p>
                             <div className="flex items-center gap-2 mt-2">
-                              <Button size="sm" variant="primary">
-                                {lead.recommendedAction}
-                              </Button>
-                              <Button size="sm" variant="secondary">
-                                <MessageSquare className="size-3.5" strokeWidth={2} />
-                                Message
-                              </Button>
+                              <Button size="sm" variant="primary">{lead.recommendedAction}</Button>
+                              <Button size="sm" variant="secondary"><MessageSquare className="size-3.5" strokeWidth={2} />Message</Button>
                             </div>
                           </div>
                           <div>

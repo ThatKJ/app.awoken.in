@@ -16,6 +16,7 @@ import { APISettings } from "@/components/settings/api-settings"
 import { DangerZoneSettings } from "@/components/settings/danger-zone-settings"
 import { useSettings, useUpdateSettings, useResetSettings } from "@/hooks/use-settings"
 import { Save, RotateCcw } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const section: Variants = {
   hidden: { opacity: 0, y: 8 },
@@ -91,35 +92,21 @@ function SettingsPage() {
 
   return (
     <div className="mx-auto flex max-w-[1200px] flex-col gap-5 py-6 px-5">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-          <p className="text-sm text-muted-foreground mt-1">Configure how your AI workforce operates.</p>
-        </div>
+      <div className="flex items-center justify-between mb-4">
+        <div />
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => resetMutation.mutate()}
-            className="flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-primary/30 transition-colors"
-          >
-            <RotateCcw className="size-4" />
-            Reset
-          </button>
-          <button
-            onClick={() => updateMutation.mutate({})}
-            className="flex items-center gap-2 rounded-xl bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            <Save className="size-4" />
-            Save Changes
-          </button>
+          <Button variant="secondary" size="sm" onClick={() => resetMutation.mutate()}>
+            <RotateCcw className="size-4" />Reset
+          </Button>
+          <Button size="sm" onClick={() => updateMutation.mutate({})}>
+            <Save className="size-4" />Save Changes
+          </Button>
         </div>
       </div>
 
       <div className="flex gap-5">
-        {/* Sidebar */}
         <SettingsSidebar />
 
-        {/* Content */}
         <motion.div key={active} variants={section} initial="hidden" animate="visible" className="flex-1 min-w-0 max-w-3xl space-y-6">
           {active === "organization" && org && (
             <OrganizationSettings data={org} onChange={(d) => updateMutation.mutate({ organization: d })} />

@@ -2,7 +2,6 @@
 
 import { useMemo } from "react"
 import { motion, type Variants } from "framer-motion"
-import { SectionHeader } from "@/components/shared/section-header"
 import { ChartCard } from "@/components/reports/chart-card"
 import { ReportSummaryGrid } from "@/components/reports/report-summary"
 import { RevenueChart } from "@/components/reports/revenue-chart"
@@ -43,28 +42,23 @@ export default function ReportsPage() {
 
   return (
     <div className="mx-auto flex max-w-[1400px] flex-col gap-5 py-6 px-5">
-      {/* Header */}
-      <motion.div custom={0} variants={section} initial="hidden" animate="visible" className="flex items-start justify-between">
-        <SectionHeader
-          title="Reports"
-          description="Business performance across your AI workforce."
-        />
-        <ExportMenu onExport={(format) => exportMutation.mutate({ format })} />
+      <motion.div custom={0} variants={section} initial="hidden" animate="visible">
+        <div className="flex items-center justify-between mb-4">
+          <div />
+          <ExportMenu onExport={(format) => exportMutation.mutate({ format })} />
+        </div>
       </motion.div>
 
-      {/* Filters */}
       <motion.div custom={1} variants={section} initial="hidden" animate="visible">
         <ReportFilters />
       </motion.div>
 
-      {/* KPI Summary */}
       {summary && (
         <motion.div custom={2} variants={section} initial="hidden" animate="visible">
           <ReportSummaryGrid summary={summary} />
         </motion.div>
       )}
 
-      {/* Charts Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <motion.div custom={3} variants={section} initial="hidden" animate="visible">
           <ChartCard title="Revenue Over Time" subtitle="Monthly revenue vs pipeline creation">
@@ -91,14 +85,12 @@ export default function ReportsPage() {
         </motion.div>
       </div>
 
-      {/* Revenue Attribution */}
       <motion.div custom={7} variants={section} initial="hidden" animate="visible">
         <ChartCard title="Revenue Attribution" subtitle="Revenue contribution by worker">
           {attribution && <AttributionTable data={attribution} />}
         </ChartCard>
       </motion.div>
 
-      {/* AI Insights */}
       <motion.div custom={8} variants={section} initial="hidden" animate="visible">
         <div>
           <div className="flex items-center justify-between mb-4">
