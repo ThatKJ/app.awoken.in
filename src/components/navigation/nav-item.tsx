@@ -18,7 +18,7 @@ export function NavItem({ item }: { item: NavItemType }) {
       aria-label={item.title}
       tabIndex={item.disabled ? -1 : 0}
       className={cn(
-        "group relative flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium outline-none transition-all duration-100",
+        "group relative flex items-center gap-3 rounded-lg px-3 py-1 text-sm font-medium outline-none transition-all duration-100",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
         isActive
           ? "bg-sidebar-accent/60 text-foreground font-semibold"

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { Search, LayoutDashboard, Users, Target, MessageSquare, DollarSign, BarChart3, BookOpen, Puzzle, Settings, Bot, Plus, Link2, Wifi } from "lucide-react"
+import { Search, LayoutDashboard, Users, Target, MessageSquare, DollarSign, BarChart3, BookOpen, Puzzle, Settings, Bot, Plus, Link2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialog,
@@ -31,7 +31,6 @@ const actions = [
   { icon: Bot, label: "Add Worker", shortcut: "W" },
   { icon: Plus, label: "Create Task", shortcut: "T" },
   { icon: Link2, label: "Connect Integration" },
-  { icon: Wifi, label: "Reconnect MLS" },
 ]
 
 export function CommandSearch() {
@@ -75,14 +74,14 @@ export function CommandSearch() {
         aria-label="Search commands"
       >
         <Search className="size-3.5 shrink-0" strokeWidth={2} />
-        <span className="hidden sm:inline">Search...</span>
+        <span className="hidden sm:inline">Ask your workforce&hellip;</span>
         <kbd className="pointer-events-none ml-auto hidden select-none items-center gap-0.5 rounded-md border border-border/40 bg-background/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground/40 sm:inline-flex">
           ⌘K
         </kbd>
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen} title="Command Palette">
-        <CommandInput placeholder="Search pages, workers, actions..." />
+        <CommandInput placeholder="Ask your workforce..." />
         <CommandList>
           <CommandEmpty>
             <div className="flex flex-col items-center gap-2 py-8">

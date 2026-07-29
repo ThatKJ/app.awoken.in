@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from "react"
 
 export function useAnimatedCounter(end: number, duration = 400): number {
-  const [value, setValue] = useState(end)
-  const prevRef = useRef(end)
+  const [value, setValue] = useState(0)
+  const prevRef = useRef(0)
   const rafRef = useRef<number>(0)
 
   useEffect(() => {
