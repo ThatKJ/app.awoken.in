@@ -49,12 +49,11 @@ export function WorkforceStrip() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2, delay: i * 0.025, ease: [0.25, 0.1, 0.25, 1] }}
               className={cn(
-                "rounded-xl border border-border bg-card px-3.5 py-3",
+                "rounded-xl border border-border bg-card px-3.5 py-3 text-center",
                 "transition-all duration-150 hover:border-foreground/20",
               )}
             >
-              {/* Status + Activity */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <span className={cn("size-2 rounded-full shrink-0", w.status === "online" && "animate-pulse-dot", statusIndicator[w.status])} />
                 <div>
                   <span className="text-xs font-semibold text-foreground">{w.name}</span>
@@ -64,10 +63,9 @@ export function WorkforceStrip() {
                 </div>
               </div>
 
-              {/* Utilization bar */}
               {w.status !== "offline" && (
                 <div className="mt-2.5">
-                  <div className="h-1 overflow-hidden rounded-full bg-muted">
+                  <div className="mx-auto h-1 max-w-[80%] overflow-hidden rounded-full bg-muted">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${w.utilization}%` }}
@@ -78,8 +76,7 @@ export function WorkforceStrip() {
                 </div>
               )}
 
-              {/* Metrics row */}
-              <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground flex-wrap">
+              <div className="mt-2 flex items-center justify-center gap-2 text-[11px] text-muted-foreground flex-wrap">
                 <span className="tabular-nums">{w.handled} handled</span>
                 <span className="tabular-nums">{w.queued} queued</span>
                 {w.confidence > 0 && (
@@ -90,7 +87,6 @@ export function WorkforceStrip() {
                 {w.avgTime !== "—" && <span className="tabular-nums">{w.avgTime}</span>}
               </div>
 
-              {/* Mode badge */}
               <div className="mt-1.5">
                 <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", modeColors[w.mode])}>
                   {w.mode.toUpperCase()}

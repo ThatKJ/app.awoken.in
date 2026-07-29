@@ -17,8 +17,8 @@ export function StatusStrip() {
       {items.map((item) => {
         const Icon = item.icon
         return (
-          <div key={item.label} className={cn("rounded-xl bg-card p-3", item.live && "border border-border/40", !item.live && "")}>
-            <div className="flex items-center gap-2">
+          <div key={item.label} className={cn("rounded-xl bg-card p-3 text-center", item.live && "border border-border/40", !item.live && "")}>
+            <div className="flex flex-col items-center gap-1.5">
               <div className="flex size-6 items-center justify-center rounded-md bg-muted">
                 <Icon className="size-3 text-muted-foreground" strokeWidth={2} />
               </div>
@@ -26,7 +26,7 @@ export function StatusStrip() {
                 {item.label}
               </span>
             </div>
-            <div className="mt-1.5 flex items-center gap-1.5">
+            <div className="mt-2 flex items-center justify-center gap-1.5">
               <p className="text-xl font-bold text-foreground tabular-nums tracking-tight">{item.value}</p>
               {item.live && (
                 <span className={cn("size-1.5 rounded-full bg-success animate-pulse-dot")} />

@@ -66,7 +66,7 @@ function MetricRow({ label, value, formatter: fmt, sparklineData, sparklineColor
 
   if (!visible) {
     return (
-      <div className="space-y-1" style={{ minHeight: 52 }}>
+      <div className="space-y-1 text-center" style={{ minHeight: 52 }}>
         <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</span>
         <p className="text-sm text-muted-foreground/30 animate-pulse">&hellip;</p>
       </div>
@@ -74,12 +74,12 @@ function MetricRow({ label, value, formatter: fmt, sparklineData, sparklineColor
   }
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 text-center">
       <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</span>
       <p className="text-lg font-bold text-foreground tabular-nums tracking-tight">
         <AnimatedMetric value={value} formatter={fmt} />
       </p>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center gap-2">
         <Sparkline data={sparklineData} color={sparklineColor} />
         {personality && (
           <span className="text-[10px] text-muted-foreground/60">{personality}</span>
@@ -107,8 +107,8 @@ export function HeroMetric() {
       </div>
 
       {/* Pipeline value + LIVE */}
-      <div className="px-6 pt-4 pb-0">
-        <div className="flex items-baseline justify-between">
+      <div className="px-6 pt-4 pb-0 text-center">
+        <div className="flex flex-col items-center gap-2">
           <div className="flex items-baseline gap-4">
             <span className="text-[32px] font-bold text-foreground tabular-nums tracking-[-0.04em] leading-none">
               <AnimatedMetric value={3200000} formatter={(v) => compactCurrency(v)} />
@@ -129,17 +129,17 @@ export function HeroMetric() {
       </div>
 
       {/* Progress bar */}
-      <div className="px-6 pt-5 pb-0">
-        <div className="flex items-center justify-between mb-1.5">
+      <div className="px-6 pt-5 pb-0 text-center">
+        <div className="mb-1.5">
           <span className="text-[11px] text-muted-foreground">Target: ₹2.85Cr</span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2 mt-0.5">
             <span className="text-sm font-semibold text-foreground tabular-nums">82%</span>
             <span className="rounded-full bg-success/10 px-1.5 py-px text-[9px] font-medium text-success">
               On Track
             </span>
           </div>
         </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-muted/60 relative">
+        <div className="mx-auto h-1.5 max-w-[400px] overflow-hidden rounded-full bg-muted/60 relative">
           <div
             className="relative h-full rounded-full bg-primary transition-all duration-1000 ease-out overflow-hidden"
             style={{ width: "82%" }}

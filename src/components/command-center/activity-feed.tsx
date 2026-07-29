@@ -25,12 +25,6 @@ const yesterday: Activity[] = [
   { icon: Target, text: "Aria completed 4 site visits", detail: "All confirmed · 1 rescheduled", time: "Yesterday", type: "system" },
 ]
 
-const typeStyles = {
-  ai: "border-primary/20 bg-primary/[0.02]",
-  human: "border-foreground/10 bg-foreground/[0.02]",
-  system: "border-muted-foreground/10 bg-muted/[0.02]",
-}
-
 const iconStyles = {
   ai: "bg-primary/10 text-primary",
   human: "bg-muted text-foreground",
@@ -47,10 +41,8 @@ function ActivityItem({ item, isLast }: { item: Activity; isLast: boolean }) {
         <Icon className="size-3" />
       </div>
 
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-foreground">{item.text}</span>
-        </div>
+      <div className="flex-1 min-w-0 text-center">
+        <span className="text-xs font-medium text-foreground">{item.text}</span>
         <p className="text-[11px] text-muted-foreground mt-px">{item.detail}</p>
       </div>
 
@@ -61,8 +53,8 @@ function ActivityItem({ item, isLast }: { item: Activity; isLast: boolean }) {
 
 export function ActivityFeed() {
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div className="rounded-xl border border-border bg-card p-4 text-center">
+      <div className="flex items-center justify-center gap-2 mb-3">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Activity</h3>
         <span className="text-[10px] text-muted-foreground">Last 24h</span>
       </div>

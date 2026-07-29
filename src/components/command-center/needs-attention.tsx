@@ -31,11 +31,9 @@ const severityConfig: Record<Severity, { dot: string; border: string; label: str
 export function NeedsAttention() {
   return (
     <div>
-      <div className="flex items-center justify-between mb-2.5">
-        <div className="flex items-center gap-1.5">
-          <AlertCircle className="size-3.5 text-destructive" strokeWidth={2} />
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Critical Attention</h3>
-        </div>
+      <div className="flex items-center justify-center gap-1.5 mb-2.5">
+        <AlertCircle className="size-3.5 text-destructive" strokeWidth={2} />
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Critical Attention</h3>
         <span className="text-[10px] text-muted-foreground">{items.length}</span>
       </div>
       <div className="flex flex-col gap-1">
@@ -57,13 +55,13 @@ export function NeedsAttention() {
                 <Icon className="size-3.5" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-center gap-1.5">
                   <span className="text-xs font-medium text-foreground">{item.title}</span>
                   <span className={cn("rounded-full px-1.5 py-px text-[9px] font-medium", cfg.labelClass)}>
                     {cfg.label}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 mt-px">
+                <div className="flex items-center justify-center gap-1.5 mt-px">
                   <p className="text-[11px] text-muted-foreground truncate">{item.detail}</p>
                   <span className="text-[10px] tabular-nums shrink-0 text-muted-foreground/60">{item.time}</span>
                 </div>

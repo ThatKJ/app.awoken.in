@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button"
 export function AiRecommendation() {
   return (
     <div className="overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-sm">
-      <div className="relative p-5">
-        <div className="flex items-start justify-between">
+      <div className="relative p-5 text-center">
+        <div className="flex items-start justify-center">
           <div className="flex items-start gap-3">
             <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shrink-0">
               <Zap className="size-4" strokeWidth={2} />
             </div>
-            <div>
+            <div className="text-left">
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-primary">AI Recommendation</span>
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
@@ -40,7 +40,7 @@ export function AiRecommendation() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-4 flex items-center justify-center gap-2">
           <Button size="sm" className="h-7 gap-1.5 px-3 text-xs">
             Review now
             <ArrowRight className="size-3" strokeWidth={2} />
