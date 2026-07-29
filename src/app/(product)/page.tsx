@@ -19,7 +19,7 @@ const section: Variants = {
 
 export default function CommandCenterPage() {
   return (
-    <div className="mx-auto flex max-w-[1400px] flex-col gap-5 py-6 px-5">
+    <div className="mx-auto flex max-w-[1400px] flex-col gap-6 py-6 px-5">
       <motion.div custom={0} variants={section} initial="hidden" animate="visible">
         <HeroMetric />
       </motion.div>
@@ -32,23 +32,37 @@ export default function CommandCenterPage() {
         <AiRecommendation />
       </motion.div>
 
-      <motion.div
-        custom={3}
-        variants={section}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 gap-5 lg:grid-cols-3"
-      >
-        <div className="lg:col-span-2">
-          <WorkforceStrip />
+      {/* Live Operations */}
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-px flex-1 bg-border/30" />
+          <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/40">
+            Live Operations
+          </span>
+          <div className="h-px flex-1 bg-border/30" />
         </div>
-        <div>
-          <NeedsAttention />
-        </div>
-      </motion.div>
 
+        <motion.div
+          custom={3}
+          variants={section}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 gap-6 lg:grid-cols-2"
+        >
+          <div className="rounded-xl border border-border bg-card p-4">
+            <WorkforceStrip />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4">
+            <NeedsAttention />
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Live Activity */}
       <motion.div custom={4} variants={section} initial="hidden" animate="visible">
-        <ActivityFeed />
+        <div className="bg-card rounded-xl border border-border p-4">
+          <ActivityFeed />
+        </div>
       </motion.div>
     </div>
   )

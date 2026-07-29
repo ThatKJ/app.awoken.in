@@ -1,5 +1,6 @@
 "use client"
 
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Bot, User, Target, Clock, MessageSquare } from "lucide-react"
 
@@ -12,73 +13,60 @@ type Activity = {
 }
 
 const today: Activity[] = [
-  { icon: Bot, text: "Elena qualified lead Priya Sharma", detail: "Confidence 92% · Auto-approved → Convert", time: "2m ago", type: "ai" },
-  { icon: MessageSquare, text: "Marcus resolved query for Rajesh Kumar", detail: "Contract terms explained · 4 messages", time: "15m ago", type: "ai" },
-  { icon: Target, text: "Priya flagged anomaly in visit data", detail: "Week-over-week drop of 18% · Needs review", time: "32m ago", type: "ai" },
-  { icon: User, text: "You dismissed 3 recovered deals", detail: "Bulk action · No longer valid", time: "1h ago", type: "human" },
-  { icon: Clock, text: "MLS integration sync completed", detail: "Duration 12s · 0 errors", time: "2h ago", type: "system" },
+  { icon: Bot, text: "Elena qualified Priya Sharma", detail: "Confidence 96% · Auto-approved", time: "2 min ago", type: "ai" },
+  { icon: MessageSquare, text: "Marcus resolved Rajesh Kumar", detail: "Contract terms explained", time: "15 min ago", type: "ai" },
+  { icon: Target, text: "Priya detected anomaly in visit data", detail: "Week-over-week drop of 18% · Needs review", time: "32 min ago", type: "ai" },
+  { icon: User, text: "You dismissed 3 recovered deals", detail: "Bulk action · No longer valid", time: "1 hr ago", type: "human" },
+  { icon: Clock, text: "MLS sync completed", detail: "Duration 12s · 0 errors", time: "1 hr ago", type: "system" },
 ]
 
-const yesterday: Activity[] = [
-  { icon: Bot, text: "Elena processed 28 leads overnight", detail: "6 qualified · 2 high-priority", time: "Yesterday", type: "ai" },
-  { icon: MessageSquare, text: "Marcus handled 15 after-hours messages", detail: "93% satisfaction · 1 escalated", time: "Yesterday", type: "ai" },
-  { icon: Target, text: "Aria completed 4 site visits", detail: "All confirmed · 1 rescheduled", time: "Yesterday", type: "system" },
-]
-
-const iconStyles = {
-  ai: "bg-primary/10 text-primary",
-  human: "bg-muted text-foreground",
-  system: "bg-muted text-muted-foreground",
+const dotColors = {
+  ai: "bg-primary",
+  human: "bg-muted-foreground",
+  system: "bg-info",
 }
 
-function ActivityItem({ item, isLast }: { item: Activity; isLast: boolean }) {
-  const Icon = item.icon
-  return (
-    <div className={cn("flex gap-3 relative", !isLast && "pb-2.5")}>
-      {!isLast && <div className="absolute left-[11px] top-5 bottom-0 w-px bg-border" />}
-
-      <div className={cn("flex size-6 items-center justify-center rounded-md shrink-0", iconStyles[item.type])}>
-        <Icon className="size-3" />
-      </div>
-
-      <div className="flex-1 min-w-0 text-center">
-        <span className="text-xs font-medium text-foreground">{item.text}</span>
-        <p className="text-[11px] text-muted-foreground mt-px">{item.detail}</p>
-      </div>
-
-      <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">{item.time}</span>
-    </div>
-  )
+const iconColors = {
+  ai: "text-primary",
+  human: "text-muted-foreground",
+  system: "text-info",
 }
 
 export function ActivityFeed() {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 text-center">
-      <div className="flex items-center justify-center gap-2 mb-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Activity</h3>
-        <span className="text-[10px] text-muted-foreground">Last 24h</span>
-      </div>
+    <div>
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Live Activity</h3>
 
-      <div className="space-y-1">
-        <div className="flex items-center gap-2 mb-2.5">
-          <div className="h-px flex-1 bg-border/50" />
-          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Today</span>
-          <div className="h-px flex-1 bg-border/50" />
+      <div className="relative">
+        {/* Vertical timeline line */}
+        <div className="absolute left-[5px] top-2 bottom-2 w-px bg-border/50" />
+
+        <div className="flex flex-col gap-0">
+          {today.map((item, i) => (
+            <motion.div
+              key={`today-${i}`}
+              initial={{ opacity: 0, x: -4 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2, delay: i * 0.05 }}
+              className="relative flex gap-4 py-2.5"
+            >
+              {/* Dot on the timeline */}
+              <div className="relative z-10 flex shrink-0">
+                <div className={cn("size-[10px] rounded-full mt-0.5", dotColors[item.type])} />
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <item.icon className={cn("size-3 shrink-0", iconColors[item.type])} strokeWidth={2} />
+                  <span className="text-sm font-medium text-foreground">{item.text}</span>
+                </div>
+                <p className="text-[12px] text-muted-foreground mt-0.5">{item.detail}</p>
+                <span className="text-[11px] text-muted-foreground/50 tabular-nums mt-0.5 block">{item.time}</span>
+              </div>
+            </motion.div>
+          ))}
         </div>
-
-        {today.map((item, i) => (
-          <ActivityItem key={`today-${i}`} item={item} isLast={i === today.length - 1 && yesterday.length === 0} />
-        ))}
-
-        <div className="flex items-center gap-2 mb-2.5 pt-2">
-          <div className="h-px flex-1 bg-border/50" />
-          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Yesterday</span>
-          <div className="h-px flex-1 bg-border/50" />
-        </div>
-
-        {yesterday.map((item, i) => (
-          <ActivityItem key={`yesterday-${i}`} item={item} isLast={i === yesterday.length - 1} />
-        ))}
       </div>
     </div>
   )
