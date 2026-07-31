@@ -15,7 +15,7 @@ export function ThemeFavicon() {
         document.head.appendChild(favicon)
       }
 
-      favicon.href = dark ? "/favicon-white.png" : "/favicon-black.png"
+      favicon.href = dark ? "/favicon-white.svg" : "/favicon.svg"
     }
 
     update()

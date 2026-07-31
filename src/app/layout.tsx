@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   applicationName: "Awoken",
   metadataBase: new URL("https://app.awoken.in"),
   icons: {
-    icon: "/favicon-black.png",
+    icon: "/favicon.svg",
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
